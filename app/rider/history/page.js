@@ -1,86 +1,102 @@
 "use client";
 
-import Sidebar from "@/components/rider/Sidebar";
-import { useEffect, useState } from "react";
-import { MapPin, Clock, PackageCheck } from "lucide-react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-
-const mockDeliveries = [
-  {
-    id: "DL-001",
-    date: "2025-06-20",
-    time: "13:45",
-    from: "Kilimani, Nairobi",
-    to: "Westlands, Nairobi",
-    status: "Delivered",
-  },
-  {
-    id: "DL-002",
-    date: "2025-06-19",
-    time: "10:20",
-    from: "CBD, Nairobi",
-    to: "Kasarani, Nairobi",
-    status: "Delivered",
-  },
-  {
-    id: "DL-003",
-    date: "2025-06-18",
-    time: "17:10",
-    from: "Lavington",
-    to: "Ngong Road",
-    status: "Delivered",
-  },
-];
+import Sidebar from "@/app/rider/components/Sidebar";
 
 export default function RiderHistoryPage() {
-  const [deliveries, setDeliveries] = useState([]);
+  const [history, setHistory] = useState([]);
 
   useEffect(() => {
-    setDeliveries(mockDeliveries);
+    // Simulate fetching history
+    const fetchData = async () => {
+      const simulatedData = [
+        {
+          id: 1,
+          from: "CBD",
+          to: "Westlands",
+          date: "2024-06-19",
+          status: "Delivered",
+        },
+        {
+          id: 2,
+          from: "Karen",
+          to: "Kilimani",
+          date: "2024-06-18",
+          status: "Delivered",
+        },
+        {
+          id: 3,
+          from: "Lavington",
+          to: "Upper Hill",
+          date: "2024-06-17",
+          status: "Cancelled",
+        },
+      ];
+      setHistory(simulatedData);
+    };
+
+    fetchData();
   }, []);
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar />
-
-      <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50 to-emerald-50 p-6 md:pl-64">
-        <h1 className="text-2xl font-bold text-emerald-700 mb-6">
+    <div className="flex min-h-screen bg-gradient-to-br from-yellow-50 to-amber-100">
+      <main className="flex-1 md:ml-64 p-6">
+        <h1 className="text-3xl font-bold text-amber-900 mb-4">
           Delivery History
         </h1>
+        <p className="text-sm text-amber-600 mb-6">
+          View your completed and cancelled deliveries
+        </p>
 
-        <div className="space-y-4 max-w-3xl mx-auto">
-          {deliveries.map((delivery) => (
-            <motion.div
-              key={delivery.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-              className="bg-white rounded-xl p-5 shadow border border-emerald-100"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-semibold text-emerald-600">
-                    {delivery.id} — {delivery.status}
-                  </p>
-                  <p className="text-sm text-gray-500 flex items-center gap-2">
-                    <Clock className="w-4 h-4" /> {delivery.date} at{" "}
-                    {delivery.time}
-                  </p>
-                </div>
-                <PackageCheck className="w-6 h-6 text-green-500" />
-              </div>
-
-              <div className="mt-3 text-sm text-gray-700 space-y-1">
-                <p className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-emerald-500" /> From:{" "}
-                  {delivery.from}
-                </p>
-                <p className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-red-500" /> To: {delivery.to}
-                </p>
-              </div>
-            </motion.div>
-          ))}
+        <div className="bg-white rounded-xl shadow border border-amber-100 overflow-x-auto">
+          <table className="w-full table-auto">
+            <thead className="bg-amber-50 border-b border-amber-200">
+              <tr className="text-left text-sm text-amber-700">
+                <th className="px-4 py-3">ID</th>
+                <th className="px-4 py-3">Pickup</th>
+                <th className="px-4 py-3">Drop-off</th>
+                <th className="px-4 py-3">Date</th>
+                <th className="px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {history.length > 0 ? (
+                history.map((item, i) => (
+                  <motion.tr
+                    key={item.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    className="hover:bg-amber-50 text-amber-800 text-sm"
+                  >
+                    <td className="px-4 py-3 font-medium">{item.id}</td>
+                    <td className="px-4 py-3">{item.from}</td>
+                    <td className="px-4 py-3">{item.to}</td>
+                    <td className="px-4 py-3">{item.date}</td>
+                    <td
+                      className={`px-4 py-3 font-semibold ${
+                        item.status === "Delivered"
+                          ? "text-green-600"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {item.status}
+                    </td>
+                  </motion.tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="px-4 py-6 text-center text-amber-400 text-sm"
+                  >
+                    No delivery history available
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </main>
     </div>
