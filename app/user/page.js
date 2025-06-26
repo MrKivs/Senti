@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { AuthRedirect } from "@/components/AuthRedirect";
-import Sidebar from "@/components/Sidebar";
-import StatCard from "@/components/StatCard";
+import { AuthRedirect } from "../components/AuthRedirect";
+import Sidebar from "../components/Sidebar";
+import StatCard from "../../app/rider/components/StatCard";
 import { Truck, Clock, MapPin, User as UserIcon } from "lucide-react";
 
 export default function UserDashboardPage() {
