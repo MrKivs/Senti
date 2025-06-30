@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import Sidebar from "@/app/rider/components/Sidebar";
 
 export default function RiderTrackingPage() {
   const [location, setLocation] = useState("Ngong Road, Nairobi");
@@ -38,7 +37,7 @@ export default function RiderTrackingPage() {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-yellow-50 to-amber-100">
+    <div className="flex min-h-screen  bg-gradient-to-br from-yellow-50 to-amber-100">
       <main className="flex-1 md:ml-64 p-6 overflow-y-auto">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-amber-900">Tracking</h1>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import Sidebar from "@/app/rider/components/Sidebar";
+
 import { Truck, Clock, MapPin, User } from "lucide-react";
 
 function StatCard({ icon: Icon, label, value }) {
@@ -39,7 +39,6 @@ export default function RiderDashboard() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-yellow-50 to-amber-100">
-
       <main className="flex-1 md:ml-64 p-6 overflow-y-auto">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-amber-900">Rider Dashboard</h1>

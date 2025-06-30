@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import Sidebar from "@/app/rider/components/Sidebar";
 
 export default function RiderHistoryPage() {
   const [history, setHistory] = useState([]);

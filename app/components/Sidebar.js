@@ -125,11 +125,12 @@ export default function Sidebar() {
               <Settings className="h-5 w-5" strokeWidth={1.5} />
               <span>Settings</span>
             </Link>
-
-            <button className="flex w-full items-center gap-3 p-3 mt-2 rounded-lg text-sm font-medium text-red-500 hover:bg-red-50 transition">
-              <LogOut className="h-5 w-5" strokeWidth={1.5} />
-              <span>Logout</span>
-            </button>
+            <Link href={"/"}>
+              <button className="flex w-full items-center gap-3 p-3 mt-2 rounded-lg text-sm font-medium text-red-500 hover:bg-red-50 transition">
+                <LogOut className="h-5 w-5" strokeWidth={1.5} />
+                <span>Logout</span>
+              </button>
+            </Link>
           </div>
         </div>
       </aside>

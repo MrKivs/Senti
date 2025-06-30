@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import Sidebar from "@/app/rider/components/Sidebar";
 import { CheckCircle, XCircle } from "lucide-react";
 
 export default function RiderProfilePage() {

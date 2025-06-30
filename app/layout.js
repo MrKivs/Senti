@@ -1,6 +1,6 @@
 // app/layout.js
 import "./globals.css";
-
+/*
 export const metadata = {
   title: "Senti | Smart Delivery & Savings",
   description:
@@ -10,7 +10,7 @@ export const metadata = {
     icon: "/favicon.ico",
   },
 };
-
+*/
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
