@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import { CheckCircle, XCircle } from "lucide-react";
 
 export default function RiderProfilePage() {
@@ -52,7 +53,7 @@ export default function RiderProfilePage() {
           <div className="flex items-center gap-6">
             <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-md bg-amber-100">
               {avatar ? (
-                <img
+                <Image
                   src={avatar}
                   alt="Avatar"
                   className="object-cover w-full h-full"
