@@ -1,7 +1,11 @@
 // app/layout.js
 import "./globals.css";
-import Sidebar from "./components/Sidebar"; // if universal
-import ToastProvider from "./components/ToastProvider";
+import { Inter } from "next/font/google";
+import { UserProvider } from "../context/UserContext";
+import ToastProvider from "../components/ToastProvider";
+import Sidebar from "../components/Sidebar";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Senti",
@@ -11,12 +15,24 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>
-        <ToastProvider />
-        <div className="flex min-h-screen">
-          <Sidebar />
-          <main className="flex-1 ml-0 md:ml-64 p-4">{children}</main>
-        </div>
+      <body className={inter.className}>
+        <UserProvider>
+          <ToastProvider />
+          <div className="flex min-h-screen bg-white">
+            {/* Static Sidebar container for md+ */}
+            <div className="hidden md:block">
+              <Sidebar />
+            </div>
+
+            {/* Mobile Sidebar (positioned fixed inside Sidebar itself) */}
+            <div className="md:hidden">
+              <Sidebar />
+            </div>
+
+            {/* Main content */}
+            <main className="flex-1 p-4">{children}</main>
+          </div>
+        </UserProvider>
       </body>
     </html>
   );

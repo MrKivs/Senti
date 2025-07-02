@@ -2,8 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { showError } from "@/lib/toast";
-import ContributionForm from "@/app/components/ContributionForm";
+import { toast } from "sonner";
+import { supabase } from "@/lib/supabaseClient";
+
+import ContributionForm from "@/components/ContributionForm";
+import DisbursementTrigger from "@/components/DisbursementTrigger";
 
 export default function ChamaDetailsPage() {
   const { id } = useParams();
@@ -11,21 +14,25 @@ export default function ChamaDetailsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchChamaDetails();
-  }, []);
+    if (id) fetchChamaDetails();
+  }, [id]);
 
   const fetchChamaDetails = async () => {
     try {
-      const res = await fetch(`/api/chamas/${id}`);
-      const data = await res.json();
+      const { data, error } = await supabase
+        .from("chamas")
+        .select("*, members(name, email)") // if members is a relation
+        .eq("id", id)
+        .single();
 
-      if (res.ok) {
-        setChama(data);
-      } else {
-        showError(data?.message || "Failed to load chama");
+      if (error) {
+        toast.error("Failed to load chama");
+        return;
       }
+
+      setChama(data);
     } catch (err) {
-      showError("Error fetching chama details");
+      toast.error("Error fetching chama details");
     } finally {
       setLoading(false);
     }
@@ -47,12 +54,13 @@ export default function ChamaDetailsPage() {
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
-        {/* Contribution Form */}
-        <div className="bg-white p-5 rounded-xl shadow border border-emerald-100">
-          <h2 className="text-lg font-semibold text-gray-700 mb-3">
+        {/* Contribution Form + Disbursement */}
+        <div className="bg-white p-5 rounded-xl shadow border border-emerald-100 space-y-4">
+          <h2 className="text-lg font-semibold text-gray-700">
             Add Contribution
           </h2>
-          <ContributionForm chamaId={id} />
+          <ContributionForm chamaId={chama.id} />
+          <DisbursementTrigger chamaId={chama.id} />
         </div>
 
         {/* Members */}

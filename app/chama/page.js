@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { showError } from "@/lib/toast";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
+import { supabase } from "../../lib/supabaseClient";
 
 export default function ChamaMainPage() {
   const [chamas, setChamas] = useState([]);
@@ -15,16 +16,29 @@ export default function ChamaMainPage() {
 
   const fetchChamas = async () => {
     try {
-      const res = await fetch("/api/chamas");
-      const data = await res.json();
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
 
-      if (res.ok) {
-        setChamas(data || []);
-      } else {
-        showError("Failed to load chamas");
+      if (userError || !user) {
+        toast.error("You must be logged in to view your chamas.");
+        return;
       }
+
+      const { data, error } = await supabase
+        .from("chamas")
+        .select("id, name, description, members ( name, email )")
+        .contains("member_ids", [user.id]); // Ensure your DB uses an array column 'member_ids'
+
+      if (error) {
+        toast.error("Failed to load chamas.");
+        return;
+      }
+
+      setChamas(data || []);
     } catch (err) {
-      showError("Could not fetch chamas");
+      toast.error("Could not fetch chamas.");
     } finally {
       setLoading(false);
     }
@@ -64,7 +78,7 @@ export default function ChamaMainPage() {
 
               <div className="flex justify-between items-center">
                 <span className="text-sm text-emerald-600 font-medium">
-                  Members: {chama.members?.length || "N/A"}
+                  Members: {chama.members?.length ?? "N/A"}
                 </span>
                 <Link
                   href={`/chama/${chama.id}`}
