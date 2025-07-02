@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { toast } from "sonner";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "../lib/supabaseClient";
 import { ArrowDownCircle, Loader2, CheckCircle2, Coins } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 

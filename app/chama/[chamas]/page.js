@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "../../../lib/supabaseClient";
 
-import ContributionForm from "@/components/ContributionForm";
-import DisbursementTrigger from "@/components/DisbursementTrigger";
+import ContributionForm from "../../../components/ContributionForm";
+import DisbursementTrigger from "../../../components/DisbursementTrigger";
 
 export default function ChamaDetailsPage() {
   const { id } = useParams();

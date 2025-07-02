@@ -1,14 +1,28 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "@supabase/auth-helpers-react";
+import { supabase } from "../lib/supabaseClient";
 
 export default function AuthRedirect({ requireAuth = true, redirectTo = "/" }) {
-  const session = useSession();
+  const [session, setSession] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
+    const getSession = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error("Failed to get session", error);
+        return;
+      }
+      setSession(data?.session);
+    };
+
+    getSession();
+  }, []);
+
+  useEffect(() => {
+    if (requireAuth && session === null) return; // Wait until session is checked
     if (requireAuth && !session) {
       router.push(redirectTo); // not logged in
     } else if (!requireAuth && session) {
@@ -16,5 +30,5 @@ export default function AuthRedirect({ requireAuth = true, redirectTo = "/" }) {
     }
   }, [session, requireAuth, redirectTo]);
 
-  return null; // this component doesn't render anything
+  return null; // doesn't render anything
 }

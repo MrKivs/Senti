@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createClient } from "@/lib/supabaseClient"; // ✅ using createClient not supabase
+import { createClient } from "../../lib/supabaseClient"; // ✅ using createClient not supabase
 import { useRouter } from "next/navigation";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
