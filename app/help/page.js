@@ -59,13 +59,13 @@ export default function HelpPage() {
           id: "gs1",
           question: "How do I create my first chama?",
           answer:
-            "To create your first chama, navigate to the 'My Chamas' section and click 'Create New Chama'. Fill in the required details including chama name, purpose, contribution amount, and frequency. You can then invite members to join your chama.",
+            "To create your first chama, navigate to the &apos;My Chamas&apos; section and click &apos;Create New Chama&apos;. Fill in the required details including chama name, purpose, contribution amount, and frequency. You can then invite members to join your chama.",
         },
         {
           id: "gs2",
           question: "What information do I need to sign up?",
           answer:
-            "To sign up for Senti, you'll need a valid email address, your full name, and a secure password. Optionally, you can add your phone number for additional security and notifications.",
+            "To sign up for Senti, you&apos;ll need a valid email address, your full name, and a secure password. Optionally, you can add your phone number for additional security and notifications.",
         },
         {
           id: "gs3",
@@ -90,13 +90,13 @@ export default function HelpPage() {
           id: "cp2",
           question: "How do I track my contributions?",
           answer:
-            "All contributions are tracked in the 'History' section of the app. You can view contributions by date, chama, or amount. Detailed reports are also available for download.",
+            "All contributions are tracked in the &apos;History&apos; section of the app. You can view contributions by date, chama, or amount. Detailed reports are also available for download.",
         },
         {
           id: "cp3",
           question: "What happens if I miss a contribution?",
           answer:
-            "If you miss a contribution, you'll be notified and given a grace period to make the payment. After the grace period, a small penalty fee may be applied according to your chama's rules.",
+            "If you miss a contribution, you&apos;ll be notified and given a grace period to make the payment. After the grace period, a small penalty fee may be applied according to your chama&apos;s rules.",
         },
       ],
     },
@@ -333,7 +333,8 @@ export default function HelpPage() {
                   Contact Support
                 </h2>
                 <p className="text-gray-600 mt-1">
-                  Can't find what you're looking for? Send us a message.
+                  Can&apos;t find what you&apos;re looking for? Send us a
+                  message.
                 </p>
               </div>
 

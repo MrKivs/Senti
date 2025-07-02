@@ -168,8 +168,8 @@ export default function ContributionHistoryPage() {
               No Contributions Found
             </h3>
             <p className="text-gray-500 mt-2 max-w-md mx-auto">
-              You haven't made any contributions yet. Start contributing to see
-              your history here.
+              You haven&apos;t made any contributions yet. Start contributing to
+              see your history here.
             </p>
             <Link
               href="/contribute"

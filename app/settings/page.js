@@ -22,7 +22,7 @@ export default function SettingsPage() {
       dailyReminders: false,
       paymentReminders: true,
     },
-    theme: "light", // 'light' or 'dark'
+    theme: "light", // &apos;light&apos; or &apos;dark&apos;
     language: "en",
   });
 

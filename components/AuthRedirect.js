@@ -8,6 +8,7 @@ export default function AuthRedirect({ requireAuth = true, redirectTo = "/" }) {
   const [session, setSession] = useState(null);
   const router = useRouter();
 
+  // Get current session once on mount
   useEffect(() => {
     const getSession = async () => {
       const { data, error } = await supabase.auth.getSession();
@@ -21,6 +22,7 @@ export default function AuthRedirect({ requireAuth = true, redirectTo = "/" }) {
     getSession();
   }, []);
 
+  // Redirect based on session
   useEffect(() => {
     if (requireAuth && session === null) return; // Wait until session is checked
     if (requireAuth && !session) {
@@ -28,7 +30,7 @@ export default function AuthRedirect({ requireAuth = true, redirectTo = "/" }) {
     } else if (!requireAuth && session) {
       router.push(redirectTo); // already logged in
     }
-  }, [session, requireAuth, redirectTo]);
+  }, [session, requireAuth, redirectTo, router]); // ✅ include router here
 
-  return null; // doesn't render anything
+  return null; // doesn’t render anything
 }

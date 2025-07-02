@@ -201,7 +201,7 @@ export default function ProfilePage() {
           <div className="flex flex-col items-center p-6 border-b border-gray-100 bg-emerald-50">
             <div className="relative">
               {profile.avatar ? (
-                <img
+                <im
                   src={profile.avatar}
                   alt="Profile"
                   className="w-24 h-24 rounded-full object-cover border-4 border-white shadow"

@@ -155,7 +155,7 @@ export default function ContributionForm({ chamaId, chamaName }) {
       </div>
 
       <div className="text-center text-xs text-gray-500 mt-2">
-        <p>Funds will be added to the chama's account immediately</p>
+        <p>Funds will be added to the chama&apos;s account immediately</p>
       </div>
     </form>
   );

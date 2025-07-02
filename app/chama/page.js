@@ -29,7 +29,7 @@ export default function ChamaMainPage() {
       const { data, error } = await supabase
         .from("chamas")
         .select("id, name, description, members ( name, email )")
-        .contains("member_ids", [user.id]); // Ensure your DB uses an array column 'member_ids'
+        .contains("member_ids", [user.id]); // Ensure your DB uses an array column &apos;member_ids&apos;
 
       if (error) {
         toast.error("Failed to load chamas.");
@@ -59,7 +59,7 @@ export default function ChamaMainPage() {
         <p className="text-gray-500">Loading chamas...</p>
       ) : chamas.length === 0 ? (
         <p className="text-gray-500">
-          You haven't joined or created any chamas yet.
+          You haven&apos;t joined or created any chamas yet.
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

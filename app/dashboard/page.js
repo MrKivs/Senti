@@ -127,7 +127,7 @@ export default function DashboardPage() {
             Dashboard Unavailable
           </h2>
           <p className="text-gray-600 mb-6">
-            We couldn't load your dashboard data. Please try refreshing the
+            We couldn&apos;t load your dashboard data. Please try refreshing the
             page.
           </p>
           <button
@@ -158,7 +158,7 @@ export default function DashboardPage() {
               Welcome back, {summary.name || "User"} 👋
             </h1>
             <p className="text-gray-600 mt-1">
-              Here's your financial summary today
+              Here&apos;s your financial summary today
               {lastUpdated && (
                 <span className="block text-sm text-gray-400">
                   Last updated at {lastUpdated}
