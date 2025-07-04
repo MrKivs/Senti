@@ -8,10 +8,6 @@ export default function DisbursementPage({ params }) {
   const [disbursements, setDisbursements] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (chamaId) fetchDisbursements();
-  }, [chamaId]);
-
   const fetchDisbursements = async () => {
     try {
       const { data, error } = await supabase
@@ -32,6 +28,10 @@ export default function DisbursementPage({ params }) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (chamaId) fetchDisbursements();
+  }, [chamaId, fetchDisbursements]);
 
   return (
     <div className="p-6 md:p-10 bg-gray-50 min-h-screen">

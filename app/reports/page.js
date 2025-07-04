@@ -52,9 +52,9 @@ export default function ReportsPage() {
         const { data: disbursements, error: disbursementsError } =
           await supabase
             .from("disbursements")
-            .select("amount, date, description, chama_id")
-            .gte("date", dateRange.start)
-            .lte("date", dateRange.end);
+            .select("amount, disbursed_at, chama_id")
+            .gte("disbursed_at", dateRange.start)
+            .lte("disbursed_at", dateRange.end);
 
         const { data: chamas } = await supabase
           .from("chamas")
@@ -346,7 +346,9 @@ export default function ReportsPage() {
                         {t.type === "disbursement" ? "-" : "+"}
                         Ksh {t.amount.toLocaleString()}
                       </td>
-                      <td className="p-2">{t.description}</td>
+                      <td className="p-2">
+                        {t.type === "disbursement" ? "-" : t.description}
+                      </td>
                       <td className="p-2">{t.chamaName}</td>
                     </tr>
                   ))}

@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
 import { supabase } from "../../lib/supabaseClient";
+import { showSuccess, showError } from "../../lib/toast";
+import CreateChamaModal from "../../components/CreateChamaModal";
 
 export default function ChamaMainPage() {
   const [chamas, setChamas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   useEffect(() => {
     fetchChamas();
@@ -20,25 +22,23 @@ export default function ChamaMainPage() {
         data: { user },
         error: userError,
       } = await supabase.auth.getUser();
-
       if (userError || !user) {
-        toast.error("You must be logged in to view your chamas.");
+        showError("You must be logged in to view your chamas.");
         return;
       }
-
-      const { data, error } = await supabase
+      console.log("[ChamaMainPage] user.id:", user.id);
+      const { data: chamas, error } = await supabase
         .from("chamas")
-        .select("id, name, description, members ( name, email )")
-        .contains("member_ids", [user.id]); // Ensure your DB uses an array column &apos;member_ids&apos;
-
+        .select("*")
+        .contains("member_ids", [user.id]);
       if (error) {
-        toast.error("Failed to load chamas.");
+        showError("Failed to load chamas.");
         return;
       }
-
-      setChamas(data || []);
+      console.log("[ChamaMainPage] fetched chamas:", chamas);
+      setChamas(chamas || []);
     } catch (err) {
-      toast.error("Could not fetch chamas.");
+      showError("Could not fetch chamas.");
     } finally {
       setLoading(false);
     }
@@ -46,13 +46,19 @@ export default function ChamaMainPage() {
 
   return (
     <div className="min-h-screen p-6 md:p-10 bg-gray-50">
+      <CreateChamaModal
+        open={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSuccess={fetchChamas}
+      />
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-emerald-700">Your Chamas</h1>
-        <Link href="/chama/create">
-          <button className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-md">
-            + Create Chama
-          </button>
-        </Link>
+        <button
+          className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-md"
+          onClick={() => setShowCreateModal(true)}
+        >
+          + Create Chama
+        </button>
       </div>
 
       {loading ? (

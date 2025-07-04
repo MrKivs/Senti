@@ -42,26 +42,62 @@ export default function SignupPage() {
       if (error) {
         setError(error.message || "Signup failed. Try again.");
       } else {
-        const userId = data.user?.id;
-        if (userId) {
-          const nameFromEmail = email.split("@")[0];
-
-          await supabase.from("users").insert([
-            {
-              id: userId,
-              email: email.trim(),
-              name: nameFromEmail,
-              joined_at: new Date().toISOString(),
-            },
-          ]);
+        // Wait for session (user may need to confirm email)
+        let sessionUser = null;
+        for (let i = 0; i < 10; i++) {
+          const { data: sessionData } = await supabase.auth.getSession();
+          sessionUser = sessionData?.session?.user;
+          if (sessionUser) break;
+          await new Promise((res) => setTimeout(res, 1000));
         }
-
+        if (sessionUser) {
+          // Process pending invitations
+          await processInvitations(sessionUser);
+        }
         router.push("/dashboard");
       }
     } catch (err) {
       setError("Unexpected error occurred.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  // Process pending invitations for this user
+  async function processInvitations(user) {
+    try {
+      const { data: invites, error: invitesError } = await supabase
+        .from("invitations")
+        .select("id, chama_id")
+        .eq("invited_email", user.email)
+        .eq("status", "pending");
+      if (invitesError || !invites || invites.length === 0) return;
+      for (const invite of invites) {
+        // Add user to chama's member_ids
+        const { data: chama, error: chamaError } = await supabase
+          .from("chamas")
+          .select("member_ids")
+          .eq("id", invite.chama_id)
+          .single();
+        if (chamaError || !chama) continue;
+        const member_ids = Array.isArray(chama.member_ids)
+          ? chama.member_ids
+          : [];
+        if (!member_ids.includes(user.id)) {
+          const updated_ids = [...member_ids, user.id];
+          await supabase
+            .from("chamas")
+            .update({ member_ids: updated_ids })
+            .eq("id", invite.chama_id);
+        }
+        // Mark invite as accepted
+        await supabase
+          .from("invitations")
+          .update({ status: "accepted" })
+          .eq("id", invite.id);
+      }
+    } catch (err) {
+      // Silent fail, do not block signup
     }
   }
 

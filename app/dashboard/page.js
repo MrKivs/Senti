@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { supabase } from "../../lib/supabaseClient";
+import { showSuccess, showError } from "../../lib/toast";
 
 import {
   ArrowPathIcon,
@@ -32,14 +32,14 @@ export default function DashboardPage() {
         .single();
 
       if (error) {
-        toast.error("Failed to fetch dashboard data");
+        showError("Failed to fetch dashboard data");
         setSummary(null);
       } else {
         setSummary(data);
         setLastUpdated(new Date().toLocaleTimeString());
       }
     } catch (err) {
-      toast.error("Could not load dashboard data");
+      showError("Could not load dashboard data");
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -199,6 +199,16 @@ export default function DashboardPage() {
               summary.monthly_avg
                 ? `Avg: Ksh ${summary.monthly_avg.toLocaleString()}/mo`
                 : ""
+            }
+          />
+          <StatCard
+            title="Target Savings"
+            value={`Ksh ${summary.target_savings?.toLocaleString() || 0}`}
+            icon={<CurrencyDollarIcon className="h-6 w-6 text-emerald-400" />}
+            trend={
+              summary.target_savings
+                ? `${savingsPercentage}% achieved`
+                : "No target set"
             }
           />
         </div>

@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
-import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { ArrowDownCircle, Loader2, CheckCircle2, Coins } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { showSuccess, showError } from "../lib/toast";
 
 export default function ContributionForm({ chamaId, chamaName }) {
   const [amount, setAmount] = useState("");
@@ -14,57 +14,35 @@ export default function ContributionForm({ chamaId, chamaName }) {
   const handleContribute = async (e) => {
     e.preventDefault();
     setError("");
-
-    // Validation
     if (!amount || isNaN(parseFloat(amount))) {
       setError("Please enter a valid amount");
       return;
     }
-
     if (parseFloat(amount) <= 0) {
       setError("Amount must be greater than 0");
       return;
     }
-
     setLoading(true);
-
     try {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-
-      if (!user) {
-        throw new Error("User not authenticated");
-      }
-
-      const res = await fetch("/api/contribute", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      if (!user) throw new Error("User not authenticated");
+      const { error } = await supabase.from("contributions").insert([
+        {
           user_id: user.id,
           chama_id: chamaId,
           amount: parseFloat(amount),
-        }),
-      });
-
-      const result = await res.json();
-
-      if (res.ok) {
-        toast.success("Contribution successful!", {
-          description: `Ksh ${parseFloat(
-            amount
-          ).toLocaleString()} contributed to ${chamaName}`,
-        });
-        setSuccess(true);
-        // Reset success state after 3 seconds
-        setTimeout(() => setSuccess(false), 3000);
-      } else {
-        throw new Error(result.error || "Something went wrong");
-      }
+          status: "completed",
+          date: new Date().toISOString(),
+        },
+      ]);
+      if (error) throw error;
+      showSuccess("Contribution successful!");
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
-      toast.error("Contribution failed", {
-        description: err.message || "Could not process contribution",
-      });
+      showError("Contribution failed", { description: err.message });
       setError(err.message);
     } finally {
       setLoading(false);

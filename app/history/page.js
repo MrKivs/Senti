@@ -15,28 +15,36 @@ export default function ContributionHistoryPage() {
     key: "date",
     direction: "desc",
   });
+  const [error, setError] = useState("");
 
   useEffect(() => {
+    const fetchHistory = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) {
+          setError("You must be logged in to view your history.");
+          setLoading(false);
+          return;
+        }
+        const { data, error } = await supabase
+          .from("contributions")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("date", { ascending: false });
+        if (error) setError("Failed to fetch contribution history.");
+        else setContributions(data || []);
+      } catch (err) {
+        setError("Could not load contribution history.");
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchHistory();
   }, []);
-
-  const fetchHistory = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch("/api/contributions/history");
-      const data = await res.json();
-
-      if (res.ok) {
-        setContributions(data);
-      } else {
-        showError(data?.message || "Failed to load history");
-      }
-    } catch (err) {
-      showError("Unable to load contribution history");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSort = (key) => {
     let direction = "asc";
@@ -61,6 +69,14 @@ export default function ContributionHistoryPage() {
   const getSortIcon = (key) => {
     if (sortConfig.key !== key) return null;
     return sortConfig.direction === "asc" ? "↑" : "↓";
+  };
+
+  // Defensive helper for type label
+  const getTypeLabel = (type) => {
+    if (typeof type === "string" && type.length > 0) {
+      return type.charAt(0).toUpperCase() + type.slice(1);
+    }
+    return <span className="text-red-500">Unknown</span>;
   };
 
   return (
@@ -103,7 +119,9 @@ export default function ContributionHistoryPage() {
 
           <div className="flex items-end">
             <button
-              onClick={fetchHistory}
+              onClick={() => {
+                // Implement refresh functionality
+              }}
               className="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 px-4 py-2 rounded-lg transition flex items-center"
             >
               <svg
@@ -224,7 +242,11 @@ export default function ContributionHistoryPage() {
                             : "text-amber-700"
                         }`}
                       >
-                        {item.type === "deposit" ? "+" : "-"}
+                        {item.type === "deposit"
+                          ? "+"
+                          : item.type === "withdrawal"
+                          ? "-"
+                          : ""}
                         {Number(item.amount).toLocaleString("en-KE", {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
@@ -240,8 +262,7 @@ export default function ContributionHistoryPage() {
                               : "bg-purple-100 text-purple-800"
                           }`}
                         >
-                          {item.type.charAt(0).toUpperCase() +
-                            item.type.slice(1)}
+                          {getTypeLabel(item.type)}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-gray-700">
@@ -281,7 +302,7 @@ export default function ContributionHistoryPage() {
                           : "bg-purple-100 text-purple-800"
                       }`}
                     >
-                      {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
+                      {getTypeLabel(item.type)}
                     </span>
                   </div>
 
@@ -295,7 +316,11 @@ export default function ContributionHistoryPage() {
                             : "text-amber-700"
                         }`}
                       >
-                        {item.type === "deposit" ? "+" : "-"}
+                        {item.type === "deposit"
+                          ? "+"
+                          : item.type === "withdrawal"
+                          ? "-"
+                          : ""}
                         {Number(item.amount).toLocaleString("en-KE", {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,

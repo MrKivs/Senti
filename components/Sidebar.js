@@ -38,15 +38,15 @@ const supportLinks = [
 
 export default function Sidebar() {
   const pathname = usePathname() || "";
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { user } = useUser();
 
-  // Manage isOpen based on screen size
+  // Only toggle isOpen for mobile
   useEffect(() => {
+    if (typeof window === "undefined") return;
     const handleResize = () => {
       if (window.innerWidth >= 768) {
-        // md breakpoint
         setIsOpen(true);
       } else {
         setIsOpen(false);
@@ -57,7 +57,6 @@ export default function Sidebar() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Reset isCollapsed when sidebar closes on small screens
   useEffect(() => {
     if (!isOpen) {
       setIsCollapsed(false);

@@ -40,6 +40,23 @@ export default function LoginPage() {
       if (error) {
         setError("Invalid email or password. Please try again.");
       } else {
+        // Ensure user row exists in users table
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (user) {
+          await supabase.from("users").upsert(
+            [
+              {
+                id: user.id,
+                email: user.email,
+                name: user.user_metadata?.full_name || user.email.split("@")[0],
+                joined_at: new Date().toISOString(),
+              },
+            ],
+            { onConflict: ["id"] }
+          );
+        }
         router.replace("/dashboard");
       }
     } catch {
@@ -179,7 +196,7 @@ export default function LoginPage() {
 
           <div className="mt-8 pt-5 border-t border-gray-200">
             <p className="text-center text-sm text-gray-600">
-              Don’t have an account?{" "}
+              Don&apos;t have an account?{" "}
               <button
                 onClick={() => router.push("/signup")}
                 className="font-medium text-emerald-600 hover:text-emerald-800"

@@ -16,6 +16,9 @@ export default function ProfilePage() {
     email: "",
     phone: "",
     avatar: null,
+    address: "",
+    kyc_status: "pending",
+    target_savings: 0,
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -37,22 +40,23 @@ export default function ProfilePage() {
         data: { user },
         error,
       } = await supabase.auth.getUser();
-
       if (error || !user) return showError("You must be logged in");
-
-      const { data, error: profileError } = await supabase
-        .from("profiles")
-        .select("name, email, phone, avatar")
+      const { data, error: userError } = await supabase
+        .from("users")
+        .select(
+          "name, email, phone, avatar, address, kyc_status, target_savings"
+        )
         .eq("id", user.id)
         .single();
-
-      if (profileError) return showError("Failed to load profile");
-
+      if (userError) return showError("Failed to load profile");
       setProfile({
         name: data.name || "",
         email: data.email || user.email,
         phone: data.phone || "",
         avatar: data.avatar || null,
+        address: data.address || "",
+        kyc_status: data.kyc_status || "pending",
+        target_savings: data.target_savings || 0,
       });
     } catch {
       showError("Could not fetch profile data");
@@ -64,26 +68,23 @@ export default function ProfilePage() {
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
-
     try {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-
       const { error } = await supabase
-        .from("profiles")
+        .from("users")
         .update({
           name: profile.name,
           phone: profile.phone,
           avatar: profile.avatar,
+          address: profile.address,
+          kyc_status: profile.kyc_status,
+          target_savings: profile.target_savings,
         })
         .eq("id", user.id);
-
-      if (error) {
-        showError("Failed to update profile");
-      } else {
-        showSuccess("Profile updated successfully");
-      }
+      if (error) showError("Failed to update profile");
+      else showSuccess("Profile updated successfully");
     } catch {
       showError("Error updating profile");
     } finally {
@@ -160,7 +161,7 @@ export default function ProfilePage() {
       setProfile((prev) => ({ ...prev, avatar: publicUrl }));
 
       const { error: updateError } = await supabase
-        .from("profiles")
+        .from("users")
         .update({ avatar: publicUrl })
         .eq("id", user.id);
 

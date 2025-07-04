@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
-import { toast } from "sonner";
 import { ArrowDownCircle, Loader2, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { showSuccess, showError } from "../lib/toast";
 
 export default function DisbursementTrigger({ chamaId, chamaName }) {
   const [loading, setLoading] = useState(false);
@@ -21,7 +21,7 @@ export default function DisbursementTrigger({ chamaId, chamaName }) {
       const result = await res.json();
 
       if (res.ok) {
-        toast.success(
+        showSuccess(
           `Successfully disbursed Ksh ${result.amount} to ${result.disbursed_to}`,
           {
             description: `Disbursement from ${chamaName} completed`,
@@ -31,12 +31,12 @@ export default function DisbursementTrigger({ chamaId, chamaName }) {
         // Reset success state after 3 seconds
         setTimeout(() => setSuccess(false), 3000);
       } else {
-        toast.error("Disbursement failed", {
+        showError("Disbursement failed", {
           description: result.error || "An error occurred during disbursement",
         });
       }
     } catch (err) {
-      toast.error("Network error", {
+      showError("Network error", {
         description: "Could not connect to the server",
       });
     } finally {
