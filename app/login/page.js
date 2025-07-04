@@ -54,7 +54,7 @@ export default function LoginPage() {
                 joined_at: new Date().toISOString(),
               },
             ],
-            { onConflict: ["id"] }
+            { onConflict: "email" }
           );
         }
         router.replace("/dashboard");

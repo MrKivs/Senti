@@ -51,6 +51,20 @@ export default function SignupPage() {
           await new Promise((res) => setTimeout(res, 1000));
         }
         if (sessionUser) {
+          // Upsert user into users table to prevent duplicates
+          await supabase.from("users").upsert(
+            [
+              {
+                id: sessionUser.id,
+                email: sessionUser.email,
+                name:
+                  sessionUser.user_metadata?.full_name ||
+                  sessionUser.email.split("@")[0],
+                joined_at: new Date().toISOString(),
+              },
+            ],
+            { onConflict: "email" }
+          );
           // Process pending invitations
           await processInvitations(sessionUser);
         }
